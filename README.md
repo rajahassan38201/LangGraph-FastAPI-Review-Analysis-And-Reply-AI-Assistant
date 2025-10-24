@@ -1,5 +1,7 @@
 # Review Reply AI Assistant
 
+https://github.com/user-attachments/assets/aacab8e0-b058-4b40-ba8f-429b58823757
+
 This project is a full-stack web application that uses AI to analyze customer reviews and automatically generate professional, context-aware replies.
 
 The backend is built with FastAPI and LangGraph to create a stateful AI workflow, and the frontend is a responsive single-page application built with HTML and Tailwind CSS.
@@ -97,3 +99,4 @@ Project Structure
 ├── 🐍 main.py       # The FastAPI backend server and LangGraph logic
 ├── 🔑 .env          # Stores the OpenAI API Key (must be created)
 └── 📖 README.md     # You are here
+
