@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Reply AI Assistant</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Animated Gradient Background */
+        @keyframes gradient-xy {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animate-gradient-xy {
+            background-size: 200% 200%;
+            animation: gradient-xy 15s ease infinite;
+        }
+
+        /* Simple CSS Loader */
+        /* REMOVED .loader and @keyframes spin CSS */
+
+        /* Main card scale-in */
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-scale-in {
+            animation: scaleIn 0.5s ease-out forwards;
+        }
+
+        /* Staggered fade-in-up */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        /* Staggered delay classes */
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+
+        .delay-4 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-5 {
+            animation-delay: 0.5s;
+        }
+
+
+        /* Results fade-in (for when data is loaded) */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Custom placeholder color */
+        ::placeholder {
+            color: #6b7280;
+            /* Gray-500 */
+            opacity: 1;
+        }
+    </style>
+</head>
+<!-- NEW GRADIENT: "Sunrise Glow" -> Yellow -> Orange -> Red -->
+
+<body
+    class="min-h-screen w-full bg-gradient-to-br from-yellow-300 via-orange-400 to-red-500 animate-gradient-xy text-gray-800 flex items-center justify-center p-4">
+
+    <!-- Main Card: Clean glassmorphism on a warm background -->
+    <div class="w-full max-w-2xl bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl p-6 md:p-10 animate-scale-in">
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 text-gray-900 fade-in-up delay-1">Review Reply AI Assistant
+            </h1>
+            <p class="text-lg text-gray-700 fade-in-up delay-2">Enter a customer review and let AI craft the perfect
+                response.</p>
+        </div>
+
+        <!-- Input Section -->
+        <div class="space-y-4">
+            <label for="review-textarea" class="block text-sm font-medium text-gray-700 fade-in-up delay-3">Customer
+                Review</label>
+
+            <!-- NEW Input Area: Animated Gradient Border (Warm) -->
+            <div
+                class="p-0.5 rounded-lg bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 animate-gradient-xy fade-in-up delay-4">
+                <textarea id="review-textarea" rows="6" class="w-full p-4 rounded-md border-0 
+                                 bg-gray-50 text-gray-900 placeholder-gray-500
+                                 focus:outline-none focus:ring-0"
+                    placeholder="e.g., 'This app is amazing!' or 'I'm having trouble logging in...'"></textarea>
+            </div>
+
+            <!-- Error Message -->
+            <div id="error-message" class="text-red-600 text-sm hidden"></div>
+
+            <!-- NEW Button: "Sunrise" gradient with hover glow -->
+            <button id="submit-button" class="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white 
+                           font-semibold py-3 px-6 rounded-lg shadow-lg 
+                           hover:shadow-2xl hover:shadow-orange-500/30 hover:scale-105 
+                           transform transition-all duration-300 ease-in-out 
+                           flex items-center justify-center
+                           fade-in-up delay-5">
+                <span id="button-text">Analyze & Generate Reply</span>
+                <svg id="button-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-container" class="mt-10 hidden">
+
+            <!-- Loading Spinner (Orange color) -->
+            <!-- REMOVED loading-spinner div -->
+
+            <!-- Results Content (fades in when ready) -->
+            <div id="results-content" class="hidden space-y-6">
+
+                <h2 class="text-2xl font-bold text-center text-gray-900">Analysis Complete</h2>
+
+                <!-- Analysis Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Original Review (Clean Card) -->
+                    <div class="bg-white/80 p-4 rounded-lg shadow-md">
+                        <h3 class="font-semibold mb-2 text-gray-800">Original Review</h3>
+                        <p id="result-review" class="text-gray-700 text-sm italic"></p>
+                    </div>
+
+                    <!-- Sentiment (Clean Card) -->
+                    <div class="bg-white/80 p-4 rounded-lg shadow-md flex flex-col justify-center items-center">
+                        <h3 class="font-semibold mb-2 text-gray-800">Sentiment</h3>
+                        <!-- Sentiment colors (light green/red) for clarity -->
+                        <span id="result-sentiment" class="text-lg font-bold px-4 py-1 rounded-full"></span>
+                    </div>
+                </div>
+
+                <!-- Diagnosis (Conditional) (Clean Card) -->
+                <div id="result-diagnosis" class="bg-white/80 p-4 rounded-lg shadow-md hidden">
+                    <h3 class="font-semibold mb-3 text-lg text-gray-800">Diagnosis Details</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+                        <div>
+                            <span class="text-xs uppercase text-gray-500">Issue Type</span>
+                            <p id="result-issue" class="font-semibold text-lg text-gray-700"></p>
+                        </div>
+                        <div>
+                            <span class="text-xs uppercase text-gray-500">User Tone</span>
+                            <p id="result-tone" class="font-semibold text-lg text-gray-700"></p>
+                        </div>
+                        <div>
+                            <span class="text-xs uppercase text-gray-500">Urgency</span>
+                            <p id="result-urgency" class="font-semibold text-lg text-gray-700"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generated Response (Clean Card) -->
+                <div class="bg-white/80 p-4 rounded-lg shadow-md">
+                    <h3 class="font-semibold mb-2 text-lg text-gray-800">Suggested Reply</h3>
+                    <p id="result-response" class="text-gray-700 whitespace-pre-wrap"></p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- ALL JAVASCRIPT LOGIC REMAINS UNCHANGED ---
+
+        const submitButton = document.getElementById('submit-button');
+        const buttonText = document.getElementById('button-text');
+        const buttonSpinner = document.getElementById('button-spinner');
+        const reviewTextarea = document.getElementById('review-textarea');
+        const errorMessage = document.getElementById('error-message');
+
+        const resultsContainer = document.getElementById('results-container');
+        /* REMOVED loadingSpinner const */
+        const resultsContent = document.getElementById('results-content');
+
+        // Result fields
+        const resultReview = document.getElementById('result-review');
+        const resultSentiment = document.getElementById('result-sentiment');
+        const resultDiagnosis = document.getElementById('result-diagnosis');
+        const resultIssue = document.getElementById('result-issue');
+        const resultTone = document.getElementById('result-tone');
+        const resultUrgency = document.getElementById('result-urgency');
+        const resultResponse = document.getElementById('result-response');
+
+        // API Endpoint
+        const API_URL = 'http://127.0.0.1:8000/process-review';
+
+        submitButton.addEventListener('click', async () => {
+            const review = reviewTextarea.value;
+
+            // 1. Validate input
+            if (!review.trim()) {
+                showError('Please enter a review to analyze.');
+                return;
+            }
+
+            // 2. Set loading state
+            setLoading(true);
+            resultsContainer.classList.remove('hidden');
+            /* REMOVED loadingSpinner.classList.remove('hidden'); */
+            resultsContent.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+
+            try {
+                // 3. Call API
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ review: review }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'An unknown server error occurred.');
+                }
+
+                const data = await response.json();
+
+                // 4. Populate results
+                populateResults(data);
+
+            } catch (error) {
+                // 5. Handle errors
+                console.error('Error:', error);
+                showError(`Failed to connect to the AI service. Make sure the backend server is running. (Error: ${error.message})`);
+            } finally {
+                // 6. Reset loading state
+                setLoading(false);
+                /* REMOVED loadingSpinner.classList.add('hidden'); */
+            }
+        });
+
+        function populateResults(data) {
+            // Add fade-in animation
+            resultsContent.classList.remove('hidden');
+            resultsContent.classList.add('fade-in');
+
+            // Set review
+            resultReview.textContent = data.review;
+
+            // Set sentiment (Light theme-friendly colors)
+            resultSentiment.textContent = data.sentiment;
+            resultSentiment.classList.remove('bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+            if (data.sentiment === 'positive') {
+                resultSentiment.classList.add('bg-green-100', 'text-green-800');
+            } else {
+                resultSentiment.classList.add('bg-red-100', 'text-red-800');
+            }
+
+            // Set diagnosis (if it exists)
+            if (data.diagnosis) {
+                resultIssue.textContent = data.diagnosis.issue_type;
+                resultTone.textContent = data.diagnosis.tone;
+                resultUrgency.textContent = data.diagnosis.urgency;
+                resultDiagnosis.classList.remove('hidden');
+            } else {
+                resultDiagnosis.classList.add('hidden');
+            }
+
+            // Set response
+            resultResponse.textContent = data.response;
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                submitButton.disabled = true;
+                buttonText.classList.add('hidden');
+                buttonSpinner.classList.remove('hidden');
+            } else {
+                submitButton.disabled = false;
+                buttonText.classList.remove('hidden');
+                buttonSpinner.classList.add('hidden');
+            }
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+    </script>
+</body>
+
+</html>
